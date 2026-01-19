@@ -18,8 +18,16 @@ from django.contrib import admin
 from django.urls import path,include
 from django.shortcuts import redirect
 
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 urlpatterns = [
     #path('', lambda request: redirect('api/health/', permanent=False)),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
+    path('api/auth/login/', TokenObtainPairView.as_view()),
+    path('api/auth/refresh/', TokenRefreshView.as_view()),
 ]
+
