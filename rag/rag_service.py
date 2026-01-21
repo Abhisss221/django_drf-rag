@@ -1,18 +1,22 @@
-from .rag_chain import rag_chain
+import os
+from .rag_chain import create_rag_chain
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class RAGService:
-    _instance = None
+    def ask(self, user_id: int, question: str) -> str:
+        user_index_path = os.path.join(
+            BASE_DIR, "user_indexes", f"user_{user_id}"
+        )
 
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
+        if not os.path.exists(user_index_path):
+            return "No documents found for this user."
 
-    def ask(self, question: str) -> str:
+        rag_chain = create_rag_chain(user_index_path)
+
         result = rag_chain.invoke({"query": question})
         return result["result"]
 
 
-# Singleton instance (loaded once)
 rag_service = RAGService()

@@ -1,0 +1,3 @@
+RAG stands for Retrieval Augmented Generation.
+It combines information retrieval with language models.
+RAG helps LLMs answer questions using external knowledge.

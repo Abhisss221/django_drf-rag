@@ -17,22 +17,18 @@ from rest_framework import status
 from .serializers import AskSerializer
 from rag.rag_service import rag_service
 
-
 class AskAPIView(APIView):
     def post(self, request):
         serializer = AskSerializer(data=request.data)
-
-        if not serializer.is_valid():
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        serializer.is_valid(raise_exception=True)
 
         question = serializer.validated_data["question"]
+        user_id = request.user.id
 
-        answer = rag_service.ask(question)
+        answer = rag_service.ask(user_id, question)
 
         return Response({
+            "user_id": user_id,
             "question": question,
             "answer": answer
         })
