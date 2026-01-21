@@ -32,3 +32,24 @@ class AskAPIView(APIView):
             "question": question,
             "answer": answer
         })
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rag.ingestion_service import ingestion_service
+
+
+class IngestAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user_id = request.user.id
+
+        # Start ingestion in background
+        ingestion_service.ingest_async(user_id)
+
+        return Response({
+            "message": "Ingestion started in background",
+            "user_id": user_id
+        })
+
